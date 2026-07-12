@@ -13,6 +13,8 @@ The Terraform configuration provisions:
 
 🔧 Configuration Details
 
+![alt text](image.png)
+
 Network Architecture
 
 ┌─────────────────────────────────────────┐
@@ -26,15 +28,13 @@ Network Architecture
 │  │ │  ├─ NIC (Private IP)         │  │  │
 │  │ │  └─ Nginx (Port 80)          │  │  │
 │  │ └──────────────────────────────┘  │  │
-│  │  ↓                                  │  │
-│  │  Public IP (Static)                │  │
+│  │  ↓                                │  │
+│  │  Public IP (Static)               │  │
 │  └───────────────────────────────────┘  │
 │  NSG: Allow HTTP (80), SSH (22)         │
 └─────────────────────────────────────────┘
 
 ## Files
-
-Project Structure
 .
 ├── provider.tf              # Azure provider configuration
 ├── azure_VM.tf              # Main infrastructure resources
