@@ -18,13 +18,7 @@ The Terraform configuration provisions:
 ![alt text](image-1.png)
 
 ## Files
-.
-├── provider.tf              # Azure provider configuration
-├── azure_VM.tf              # Main infrastructure resources
-├── install_nginx.sh         # Bash script for Nginx installation
-├── terraform.tfstate        # Current state (don't commit to git!)
-├── terraform_tfstate.backup # State backup file
-└── README.md               # This file
+![alt text](image-2.png)
 
 ## Prerequisites
 
