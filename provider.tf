@@ -9,6 +9,6 @@ terraform {
 
 provider "azurerm" {
   features {} # This block is mandatory for the azurerm provider
-  skip_provider_registration = true
+  #skip_provider_registration = true
   #resource_provider_registrations = "none"
 }

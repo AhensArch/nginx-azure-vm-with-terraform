@@ -42,13 +42,12 @@ resource "azurerm_network_interface" "ahens_nic" {
   }
 }
 
-# Network Security Group (Firewall) to allow SSH & HTTP
+# Network Security Group (Firewall) to allow HTTP and optional SSH access
 resource "azurerm_network_security_group" "ahens_nsg" {
   name                = "ahens-nsg"
   location            = data.azurerm_resource_group.ahens_resource_group.location
   resource_group_name = data.azurerm_resource_group.ahens_resource_group.name
 
-  # ADD THIS NEW BLOCK FOR HTTP ACCESS
   security_rule {
     name                       = "allow_http"
     priority                   = 100
@@ -56,24 +55,24 @@ resource "azurerm_network_security_group" "ahens_nsg" {
     access                     = "Allow"
     protocol                   = "Tcp"
     source_port_range          = "*"
-    destination_port_range     = "80" # HTTP Port
+    destination_port_range     = "80"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
 
-  # ADD THIS NEW BLOCK FOR SSH ACCESS
-  security_rule {
-    name                   = "allow_ssh"
-    priority               = 110 # Priority must be unique
-    direction              = "Inbound"
-    access                 = "Allow"
-    protocol               = "Tcp"
-    source_port_range      = "*"
-    destination_port_range = "22" # SSH Port
-
-    # Best Practice: Replace "*" with your actual local public IP so no one can access it 
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
+  dynamic "security_rule" {
+    for_each = var.allowed_ssh_cidr != "" ? [1] : []
+    content {
+      name                       = "allow_ssh"
+      priority                   = 110
+      direction                  = "Inbound"
+      access                     = "Allow"
+      protocol                   = "Tcp"
+      source_port_range          = "*"
+      destination_port_range     = "22"
+      source_address_prefix      = var.allowed_ssh_cidr
+      destination_address_prefix = "*"
+    }
   }
 }
 
@@ -111,13 +110,17 @@ resource "azurerm_virtual_machine" "ahens_virtual_machine" {
   }
   os_profile {
     computer_name  = "ahens"
-    admin_username = "stellar"
-    admin_password = "Password1234!"
-    # 🚀 ADD THIS LINE TO LOAD AND PASS THE NGINX SCRIPT
+    admin_username = var.admin_username
+    # ADD THIS LINE TO LOAD AND PASS THE NGINX SCRIPT
     custom_data = filebase64("${path.module}/install_nginx.sh")
   }
   os_profile_linux_config {
-    disable_password_authentication = false
+    disable_password_authentication = true
+
+    ssh_keys {
+      path     = "/home/${var.admin_username}/.ssh/authorized_keys"
+      key_data = var.admin_ssh_public_key
+    }
   }
   tags = {
     environment = "staging"
