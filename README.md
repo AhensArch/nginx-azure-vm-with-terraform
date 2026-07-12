@@ -15,24 +15,7 @@ The Terraform configuration provisions:
 
 ![alt text](image.png)
 
-Network Architecture
-
-┌─────────────────────────────────────────┐
-│         Azure Resource Group            │
-├─────────────────────────────────────────┤
-│  Virtual Network (10.0.0.0/16)          │
-│  ┌───────────────────────────────────┐  │
-│  │ Subnet (10.0.2.0/24)              │  │
-│  │ ┌──────────────────────────────┐  │  │
-│  │ │  VM: Ubuntu 22.04 LTS        │  │  │
-│  │ │  ├─ NIC (Private IP)         │  │  │
-│  │ │  └─ Nginx (Port 80)          │  │  │
-│  │ └──────────────────────────────┘  │  │
-│  │  ↓                                │  │
-│  │  Public IP (Static)               │  │
-│  └───────────────────────────────────┘  │
-│  NSG: Allow HTTP (80), SSH (22)         │
-└─────────────────────────────────────────┘
+![alt text](image-1.png)
 
 ## Files
 .
